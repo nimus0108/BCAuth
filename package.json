@@ -4,6 +4,6 @@
     "dependencies": {
         "express": "~4.0.0",
         "body-parser": "~1.0.1",
-        "zombie": "~4.0.10",    
+        "zombie": "~4.0.10"    
     }
 }

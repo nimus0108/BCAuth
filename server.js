@@ -13,19 +13,19 @@ var router = express.Router();
 
 router.use(function(req, res, next) {
     try {
-        JSON.parse(str);
         console.log("Request received.");
-        var username = req.body.username;
-        var password = req.body.password;
-        if (Object.keys(req.body).length > 2) {
-            res.json({ 'code': 2, 'message': 'Too many arguments!' });
+        var body = JSON.parse(JSON.stringify(req.body));
+        var username = body.username;
+        var password = body.password;
+        if (Object.keys(body).length > 2) {
+            res.json({ 'status': 2, 'message': 'Too many key/values!' });
         } else if (!username || !password) {
-            res.json({ 'code': 3, 'message': 'Username or password is missing.' });
+            res.json({ 'status': 3, 'message': 'Username or password is missing.' });
         } else {
             next();
         }
     } catch (e) {
-        res.json({ 'code': 1, 'message': 'Invalid JSON.' });
+        res.json({ 'status': 1, 'message': 'Invalid JSON.' });
     }
 });
 
@@ -35,7 +35,7 @@ router.route('/login').post(function(req, res) {
     const browser = new Browser();
     browser.visit('https://ps01.bergen.org/public', function(err) {
         if (err) {
-            res.json({ 'code': 4, 'message': 'Error connecting to PowerSchool.' })
+            res.json({ 'status': 4, 'message': 'Error connecting to PowerSchool.' })
         } else {
             login(browser, username, password, res);
         }
@@ -64,11 +64,11 @@ function hashPassword(browser, plainPassword) {
 
 function verifySuccess(browser, res) {
     if (browser.document.getElementById("btn-enter")) {
-        res.json({ 'code': 5, 'message': 'Invalid Username or Password.' });
+        res.json({ 'status': 5, 'message': 'Invalid Username or Password.' });
     } else if (browser.document.getElementById("btnLogout")) {
-        res.json({ 'code': 0, 'message': 'Success.' });
+        res.json({ 'status': 0, 'message': 'Success.' });
     } else {
-        res.json({ 'code': 6, 'message': 'Connection timed out.' });
+        res.json({ 'status': 6, 'message': 'Connection timed out.' });
     }
 }
 
