@@ -1,6 +1,6 @@
 {
     "name": "bcauth",
-    "main": "server.js",
+    "main": "bcauth.js",
     "dependencies": {
         "express": "~4.0.0",
         "body-parser": "~1.0.1",
