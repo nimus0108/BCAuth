@@ -7,7 +7,7 @@ const hash = require('./md5.js');
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(bodyParser.json());
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 var router = express.Router();
 
