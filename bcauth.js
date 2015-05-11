@@ -14,6 +14,7 @@ var router = express.Router();
 router.use(function(req, res, next) {
     try {
         console.log("Request received.");
+        console.dir(req.body);
         var body = JSON.parse(JSON.stringify(req.body));
         var username = body.username;
         var password = body.password;
