@@ -18,14 +18,17 @@ router.use(function(req, res, next) {
         var username = body.username;
         var password = body.password;
         if (Object.keys(body).length > 2) {
-            res.json({ 'status': 2, 'message': 'Too many key/values!' });
+            // Too many key/values!
+            res.json({ 'status': 2 });
         } else if (!username || !password) {
-            res.json({ 'status': 3, 'message': 'Username or password is missing.' });
+            // Username or password is missing.
+            res.json({ 'status': 3 });
         } else {
             next();
         }
     } catch (e) {
-        res.json({ 'status': 1, 'message': 'Invalid JSON.' });
+        // Invalid JSON.
+        res.json({ 'status': 1 });
     }
 });
 
@@ -35,7 +38,8 @@ router.route('/login').post(function(req, res) {
     const browser = new Browser();
     browser.visit('https://ps01.bergen.org/public', function(err) {
         if (err) {
-            res.json({ 'status': 4, 'message': 'Error connecting to PowerSchool.' })
+            // Error connecting to PowerSchool.
+            res.json({ 'status': 4 })
         } else {
             login(browser, username, password, res);
         }
@@ -64,11 +68,14 @@ function hashPassword(browser, plainPassword) {
 
 function verifySuccess(browser, res) {
     if (browser.document.getElementById("btn-enter")) {
-        res.json({ 'status': 5, 'message': 'Invalid Username or Password.' });
+        // Invalid Username or Password.
+        res.json({ 'status': 5 });
     } else if (browser.document.getElementById("btnLogout")) {
-        res.json({ 'status': 0, 'message': 'Success.' });
+        // Success.
+        res.json({ 'status': 0 });
     } else {
-        res.json({ 'status': 6, 'message': 'Connection timed out.' });
+        // Connection timed out.
+        res.json({ 'status': 6 });
     }
 }
 
