@@ -15,7 +15,7 @@ BCAuth uses the io.js platform with the Express framework to run the API. Zombie
 
 ## Making the Request
 ---
-Whenever a student wants to log into your application, just send a POST request containing JSON to api.robertkim.io:8080/bcauth/api/login. Your JSON body should only contain 2 key/values: `username` and `password`. Also, set your `Content-Type` header as `application/json`.
+Whenever a student wants to log into your application, just send a POST request containing JSON to https://robertkim.io/bcauth/api/login (**NOTE:** You **MUST** use HTTPS or else you will receive an error). Your JSON body should only contain 2 key/values: `username` and `password`. Also, set your `Content-Type` header as `application/json`.
 
 Example POST body:
 `{ "username" : "RobKim", "password" : "hunter2" }` 
