@@ -79,7 +79,7 @@ function verifySuccess(browser, res) {
     }
 }
 
-app.use('/api', router);
+app.use('/', router);
 
 app.listen(port);
 console.log("Server started on port " + port + ".");
