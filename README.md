@@ -24,7 +24,10 @@ That's it! You should then receive a JSON response with a code and message.
 
 ## Receiving the Response
 ---
-The response you receive from the URL above will be in the form of JSON. There will be 2 key/values: `status` for the response status and a `message` for a short blurb of what the status means.
+The response you receive from the URL above will be in the form of JSON. There will be 1 key/value `status` for the response status.
+
+Example response:
+`{ "status" : 0 }`
 
 ### Status Codes
 * 0: Login was successful. User was authenticated.
