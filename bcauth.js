@@ -89,7 +89,7 @@ function verifySuccess(browser, res) {
     }
 }
 
-app.use('/', router);
+app.use('/bcauth', router);
 
 app.listen(port);
 console.log("Server started on port " + port + ".");
