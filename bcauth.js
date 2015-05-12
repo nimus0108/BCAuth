@@ -11,7 +11,32 @@ var port = process.env.PORT || 3000;
 
 var router = express.Router();
 
-router.post('/login', function(req, res) {
+router.use(function(req, res) {
+    try {
+        console.log("Request received.");
+        var body = JSON.parse(JSON.stringify(req.body));
+        var username = body.username;
+        var password = body.password;
+        if (Object.keys(body).length > 2) {
+            // Too many key/values!
+            console.log("Request sent back with status: 2");
+            res.json({ 'status': 2 });
+        } else if (!username || !password) {
+            // Username or password is missing.
+            console.log("Request sent back with status: 3");
+            res.json({ 'status': 3 });
+        } else {
+            console.log("Passing request to next route.");
+            next();
+        }
+    } catch (e) {
+        // Invalid JSON.
+        console.log("Request sent back with status: 1");
+        res.json({ 'status': 1 });
+    }
+});
+
+router.route('/login').post(function(req, res) {
     console.log('Route /login accessed');
     var username = req.body.username;
     var password = req.body.password;
@@ -62,29 +87,6 @@ function verifySuccess(browser, res) {
         res.json({ 'status': 6 });
     }
 }
-
-router.use(function(req, res) {
-    try {
-        console.log("Request received.");
-        var body = JSON.parse(JSON.stringify(req.body));
-        var username = body.username;
-        var password = body.password;
-        if (Object.keys(body).length > 2) {
-            // Too many key/values!
-            console.log("Request sent back with status: 2");
-            res.json({ 'status': 2 });
-        } else if (!username || !password) {
-            // Username or password is missing.
-            console.log("Request sent back with status: 3");
-            res.json({ 'status': 3 });
-        } else {
-        }
-    } catch (e) {
-        // Invalid JSON.
-        console.log("Request sent back with status: 1");
-        res.json({ 'status': 1 });
-    }
-});
 
 app.use('/', router);
 
