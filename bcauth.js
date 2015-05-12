@@ -11,7 +11,7 @@ var port = process.env.PORT || 3000;
 
 var router = express.Router();
 
-router.use(function(req, res, next) {
+router.use('/login', function(req, res, next) {
     try {
         console.log("Request received.");
         console.dir(req.body);
@@ -37,7 +37,7 @@ router.use(function(req, res, next) {
     }
 });
 
-router.route('/login').post(function(req, res) {
+router.post('/login', function(req, res) {
     console.log('hi');
     var username = req.body.username;
     var password = req.body.password;
