@@ -7,44 +7,41 @@ const hash = require('./md5.js');
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(bodyParser.json());
 
-const port = process.env.PORT || 6000;
+const port = process.env.PORT || 3000;
 
 var router = express.Router();
 
 router.use(function(req, res, next) {
     try {
         console.log("Request received.");
-        console.dir(req.body);
         var body = JSON.parse(JSON.stringify(req.body));
         var username = body.username;
         var password = body.password;
         if (Object.keys(body).length > 2) {
             // Too many key/values!
-	    console.log(2);
+            console.log("Request sent back with status: 2");
             res.json({ 'status': 2 });
         } else if (!username || !password) {
-	    console.log(1);
             // Username or password is missing.
+            console.log("Request sent back with status: 3");
             res.json({ 'status': 3 });
         } else {
-            console.log(4);
             next();
         }
     } catch (e) {
         // Invalid JSON.
-        console.log(3);
+        console.log("Request sent back with status: 1");
         res.json({ 'status': 1 });
     }
 });
 
 router.route('/login').post(function(req, res) {
-    console.log(123);
     var username = req.body.username;
     var password = req.body.password;
     const browser = new Browser();
     browser.visit('https://ps01.bergen.org/public', function(err) {
         if (err) {
-            console.log(5);
+            console.log("Request sent back with status: 4");
             // Error connecting to PowerSchool.
             res.json({ 'status': 4 })
         } else {
@@ -76,12 +73,15 @@ function hashPassword(browser, plainPassword) {
 function verifySuccess(browser, res) {
     if (browser.document.getElementById("btn-enter")) {
         // Invalid Username or Password.
+        console.log("Request sent back with status: 5");
         res.json({ 'status': 5 });
     } else if (browser.document.getElementById("btnLogout")) {
         // Success.
+        console.log("Request sent back with status: 0");
         res.json({ 'status': 0 });
     } else {
         // Connection timed out.
+        console.log("Request sent back with status: 6");
         res.json({ 'status': 6 });
     }
 }
