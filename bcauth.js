@@ -11,32 +11,6 @@ var port = process.env.PORT || 3000;
 
 var router = express.Router();
 
-router.use('/login', function(req, res, next) {
-    try {
-        console.log("Request received.");
-        console.dir(req.body);
-        var body = JSON.parse(JSON.stringify(req.body));
-        var username = body.username;
-        var password = body.password;
-        if (Object.keys(body).length > 2) {
-            // Too many key/values!
-            console.log("Request sent back with status: 2");
-            res.json({ 'status': 2 });
-        } else if (!username || !password) {
-            // Username or password is missing.
-            console.log("Request sent back with status: 3");
-            res.json({ 'status': 3 });
-        } else {
-            console.log("Next route.");
-            next();
-        }
-    } catch (e) {
-        // Invalid JSON.
-        console.log("Request sent back with status: 1");
-        res.json({ 'status': 1 });
-    }
-});
-
 router.post('/login', function(req, res) {
     console.log('hi');
     var username = req.body.username;
@@ -88,6 +62,32 @@ function verifySuccess(browser, res) {
         res.json({ 'status': 6 });
     }
 }
+
+router.use(function(req, res, next) {
+    try {
+        console.log("Request received.");
+        console.dir(req.body);
+        var body = JSON.parse(JSON.stringify(req.body));
+        var username = body.username;
+        var password = body.password;
+        if (Object.keys(body).length > 2) {
+            // Too many key/values!
+            console.log("Request sent back with status: 2");
+            res.json({ 'status': 2 });
+        } else if (!username || !password) {
+            // Username or password is missing.
+            console.log("Request sent back with status: 3");
+            res.json({ 'status': 3 });
+        } else {
+            console.log("Next route.");
+            next();
+        }
+    } catch (e) {
+        // Invalid JSON.
+        console.log("Request sent back with status: 1");
+        res.json({ 'status': 1 });
+    }
+});
 
 app.use('/', router);
 
