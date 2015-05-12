@@ -1,5 +1,5 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const Browser = require('zombie');
 const hash = require('./md5.js');
@@ -7,41 +7,38 @@ const hash = require('./md5.js');
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(bodyParser.json());
 
-const port = process.env.PORT || 6000;
+const port = process.env.PORT || 3000;
 
 var router = express.Router();
 
 router.use(function(req, res, next) {
     try {
         console.log("Request received.");
-        console.dir(req.body);
         var body = JSON.parse(JSON.stringify(req.body));
         var username = body.username;
         var password = body.password;
         if (Object.keys(body).length > 2) {
-	       console.log(2);
+            // Too many key/values!
             res.json({ 'status': 2 });
         } else if (!username || !password) {
-	       console.log(3);
+            // Username or password is missing.
             res.json({ 'status': 3 });
         } else {
-            console.log(234567);
             next();
         }
     } catch (e) {
-        console.log(1);
+        // Invalid JSON.
         res.json({ 'status': 1 });
     }
 });
 
-router.post('/login', function(req, res) {
-    console.log(13456678);
+router.route('/login').post(function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
     const browser = new Browser();
     browser.visit('https://ps01.bergen.org/public', function(err) {
         if (err) {
-            console.log(4);
+            // Error connecting to PowerSchool.
             res.json({ 'status': 4 })
         } else {
             login(browser, username, password, res);
@@ -71,10 +68,13 @@ function hashPassword(browser, plainPassword) {
 
 function verifySuccess(browser, res) {
     if (browser.document.getElementById("btn-enter")) {
+        // Invalid Username or Password.
         res.json({ 'status': 5 });
     } else if (browser.document.getElementById("btnLogout")) {
+        // Success.
         res.json({ 'status': 0 });
     } else {
+        // Connection timed out.
         res.json({ 'status': 6 });
     }
 }
