@@ -11,7 +11,7 @@ var port = process.env.PORT || 3000;
 
 var router = express.Router();
 
-router.use(function(req, res) {
+router.use(function(req, res, next) {
     try {
         console.log("Request received.");
         var body = JSON.parse(JSON.stringify(req.body));
@@ -31,12 +31,13 @@ router.use(function(req, res) {
         }
     } catch (e) {
         // Invalid JSON.
+        console.log(e);
         console.log("Request sent back with status: 1");
         res.json({ 'status': 1 });
     }
 });
 
-router.route('/login').post(function(req, res) {
+router.post('/login', function(req, res) {
     console.log('Route /login accessed');
     var username = req.body.username;
     var password = req.body.password;
