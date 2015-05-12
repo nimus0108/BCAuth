@@ -6,6 +6,8 @@ var hash = require('./md5.js');
 
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(bodyParser.json());
+app.enable('trust proxy');
+
 
 var port = process.env.PORT || 3000;
 
@@ -13,7 +15,7 @@ var router = express.Router();
 
 router.use(function(req, res, next) {
     try {
-        console.log("Request received.");
+        console.log("Request received from " + req.ip + ".");
         var body = JSON.parse(JSON.stringify(req.body));
         var username = body.username;
         var password = body.password;
@@ -26,7 +28,6 @@ router.use(function(req, res, next) {
             console.log("Request sent back with status: 3");
             res.json({ 'status': 3 });
         } else {
-            console.log("Passing request to next route.");
             next();
         }
     } catch (e) {
@@ -38,7 +39,6 @@ router.use(function(req, res, next) {
 });
 
 router.post('/login', function(req, res) {
-    console.log('Route /login accessed');
     var username = req.body.username;
     var password = req.body.password;
     var browser = new Browser();
