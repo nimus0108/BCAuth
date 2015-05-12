@@ -12,20 +12,49 @@ var port = process.env.PORT || 3000;
 var router = express.Router();
 
 router.post('/login', function(req, res) {
-    console.log('hi');
-    var username = req.body.username;
-    var password = req.body.password;
-    var browser = new Browser();
-    browser.visit('https://ps01.bergen.org/public', function(err) {
-        if (err) {
-            console.log("Request sent back with status: 4");
-            // Error connecting to PowerSchool.
-            res.json({ 'status': 4 })
-        } else {
-            login(browser, username, password, res);
-        }
-    });
+    if (verifyRequest(req, res)) {
+        console.log('hi');
+        var username = req.body.username;
+        var password = req.body.password;
+        var browser = new Browser();
+        browser.visit('https://ps01.bergen.org/public', function(err) {
+            if (err) {
+                console.log("Request sent back with status: 4");
+                // Error connecting to PowerSchool.
+                res.json({ 'status': 4 })
+            } else {
+                login(browser, username, password, res);
+            }
+        });
+    }
 });
+
+function verifyRequest(req, res) {
+    try {
+        console.log("Request received.");
+        var body = JSON.parse(JSON.stringify(req.body));
+        var username = body.username;
+        var password = body.password;
+        if (Object.keys(body).length > 2) {
+            // Too many key/values!
+            console.log("Request sent back with status: 2");
+            res.json({ 'status': 2 });
+            return false;
+        } else if (!username || !password) {
+            // Username or password is missing.
+            console.log("Request sent back with status: 3");
+            res.json({ 'status': 3 });
+            return false;
+        } else {
+            return true;
+        }
+    } catch (e) {
+        // Invalid JSON.
+        console.log("Request sent back with status: 1");
+        res.json({ 'status': 1 });
+        return false;
+    }
+}
 
 function login(browser, username, password, res) {
     var hashes = hashPassword(browser, password)
@@ -62,32 +91,6 @@ function verifySuccess(browser, res) {
         res.json({ 'status': 6 });
     }
 }
-
-router.use(function(req, res, next) {
-    try {
-        console.log("Request received.");
-        console.dir(req.body);
-        var body = JSON.parse(JSON.stringify(req.body));
-        var username = body.username;
-        var password = body.password;
-        if (Object.keys(body).length > 2) {
-            // Too many key/values!
-            console.log("Request sent back with status: 2");
-            res.json({ 'status': 2 });
-        } else if (!username || !password) {
-            // Username or password is missing.
-            console.log("Request sent back with status: 3");
-            res.json({ 'status': 3 });
-        } else {
-            console.log("Next route.");
-            next();
-        }
-    } catch (e) {
-        // Invalid JSON.
-        console.log("Request sent back with status: 1");
-        res.json({ 'status': 1 });
-    }
-});
 
 app.use('/', router);
 
